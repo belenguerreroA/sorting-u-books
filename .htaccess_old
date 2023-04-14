@@ -1,0 +1,19 @@
+
+# Activar RewriteEngine
+RewriteEngine on
+
+RewriteBase /localhost/complete-blog-php/
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+
+#   Reescribir la URL solicitada por el usuario
+
+#   Home
+RewriteRule ^inicio$ /index.php [L]
+
+#   FILTRAR
+#   Entrada: filtered_posts.php/TOPIC
+#   Salida: filtered_posts.php?topic=TOPIC
+#RewriteRule ^filtered_posts/(.*)$  /filtered_posts.php?topic=$1 [L]
