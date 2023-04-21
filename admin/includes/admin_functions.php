@@ -1,4 +1,32 @@
 <?php 
+
+$function = $_POST['function'];
+// $name= $_POST['name'];
+// $email= $_POST['email'];
+
+var_dump($function);
+
+if($function == "getBooks") {
+	return getBooks();
+}
+
+function getBooks() {
+	// use global $conn object in function
+	global $conn;
+	$sql = "SELECT * FROM books WHERE deleted=0;";
+	$result = mysqli_query($conn, $sql);
+	// fetch all posts as an associative array called $posts
+	$datas = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	// var_dump($books);
+	$final_datas = array();
+	
+	foreach ($datas as $data) {
+		// $book['topic'] = getPostTopic($book['id']); 
+		array_push($final_datas['data'], $data);
+	}
+	return $final_datas;
+}
+
 // Admin user variables
 $admin_id = 0;
 $isEditingUser = false;

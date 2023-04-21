@@ -3,27 +3,32 @@
 <!-- config.php should be here as the first include  -->
 
 <?php require_once( ROOT_PATH . '/includes/public_functions.php') ?>
-<?php #require_once( ROOT_PATH . '/includes/registration_login.php') ?>
+<?php require_once( ROOT_PATH . '/includes/registration_login.php') ?>
 
 <?php
-  if(isset($_POST['records-limit'])){
-      $_SESSION['records-limit'] = $_POST['records-limit'];
-  }
+if(isset($_POST['records-limit'])){
+	$_SESSION['records-limit'] = $_POST['records-limit'];
+}
   
-  $limit = isset($_SESSION['records-limit']) ? $_SESSION['records-limit'] : 12;
-  $page = (isset($_GET['page']) && is_numeric($_GET['page']) ) ? $_GET['page'] : 1;
-  $paginationStart = ($page - 1) * $limit;
-  $books = getBooks($paginationStart, $limit);
-  // Get total records
-  $countBooks = countBooks();
+$limit = isset($_SESSION['records-limit']) ? $_SESSION['records-limit'] : 15;
+$page = (isset($_GET['page']) && is_numeric($_GET['page']) ) ? $_GET['page'] : 1;
+$g_incl = (isset($_GET['g_include'])) ? $_GET['g_include'] : "";
+$g_excl = (isset($_GET['g_exclude'])) ? $_GET['g_exclude'] : "";
 
-  $allRecrods = $countBooks;
-  
-  // Calculate total pages
-  $totoalPages = ceil($allRecrods / $limit);
-  // Prev + Next
-  $prev = $page - 1;
-  $next = $page + 1;
+$paginationStart = ($page - 1) * $limit;
+
+$books = getBooks($paginationStart, $limit,$g_incl,$g_excl);
+
+// Get total records
+$countBooks = countBooks($g_incl,$g_excl);
+
+$allRecrods = $countBooks;
+
+// Calculate total pages
+$totoalPages = ceil($allRecrods / $limit);
+// Prev + Next
+$prev = $page - 1;
+$next = $page + 1;
 
 ?>
 
@@ -38,8 +43,8 @@
 
 
 	<div class="p-5 bg-primary text-white text-center">
-	  <h1>My First Bootstrap 5 Page</h1>
-	  <p>Resize this responsive page to see the effect!</p> 
+	  <h1>Home</h1>
+	  <p>books</p> 
 	</div>
 	<!-- navbar -->
 	<?php include( ROOT_PATH . '/includes/navbar.php') ?>
@@ -49,14 +54,11 @@
 	<div class="container mt-5">
 		<!-- banner -->
 		<?php #include( ROOT_PATH . '/includes/banner.php') ?>
+		
+		<?php include( ROOT_PATH . '/includes/filters_html.php') ?>		
+
 
 		<div class="content">
-			<!-- <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-				<ol class="breadcrumb">
-					<li class="breadcrumb-item"><a href="#">Home</a></li>
-					<li class="breadcrumb-item active" aria-current="page">Library</li>
-				</ol>
-			</nav> -->
 
 			<div class="row">
 				<div class="col">
@@ -67,18 +69,18 @@
 				</div>
 				
 			</div>
-			
-				
 
 			<hr>
 
-			<div class="row">
+			<?php include( ROOT_PATH . '/includes/filters_active_html.php') ?>	
+
+			<div class="grid-books">
 			<?php
 			foreach ($books as $book): ?>
 				<?php
 				// var_dump($book);
 				?>					
-				<div class="col-sm-3">
+				<!-- <div class="col-sm-3"> -->
 					<div class="card">
 						<div class="card-body">
 							<h6 class="card-title"><?php echo ($book["url"]) ? "<a href='".$book["url"]."' target='_blank'>".$book["name"]."</a>" : $book["name"]; ?></h6>
@@ -87,48 +89,51 @@
 							<a href="#" class="card-link">Another link</a> -->
 						</div>
 					</div>
-				</div>
+				<!-- </div> -->
 			<?php endforeach ?>
 			</div>
 			<hr>
 			<div class="row">
-				<?php
-				// var_dump($totoalPages);
-				// var_dump((int)$page);
-
-				?>
 				<!-- Pagination -->
+				<?php 
+				$pagePrev = $page - 1;
+				$pageNext = $page + 1;
+				?>
 
-				<nav >
+				<nav class="d-flex justify-content-center">
 					<ul class="pagination justify-content-center_ m-0" style="overflow: auto;">
-						<li class="page-item <?php if($page <= 1){ echo 'disabled'; } ?>">
-							<a class="page-link" href="<?php if($page <= 1){ echo '#'; } else { echo "?page=" . $prev; } ?>">Previous</a>
-						</li>
+						<?php 
+						echo '<li class="page-item '. (($page <= 1) ? 'disabled' : '') .'"><a class="page-link" href="'.(($page <= 1) ? '#' : '?page='.$prev) .'">Prev</a></li>';
+						echo '<li class="page-item '. (($page == 1) ? 'active' : '') .'"><a class="page-link" href="index.php?page=1"> 1 </a></li>';
+						
+						if($prev > 1) { 
+							if($page != 3) {
+								echo '<li class="page-item"><div class="page-link disabled"> ... </div></li>';
+							}
+							echo '<li class="page-item"><a class="page-link" href="index.php?page='.$prev.'"> '.$prev.'</a></li>';
+						}	
 
-						<?php for($i = 1; $i <= $totoalPages; $i++ ): ?>
-						<li class="page-item <?php if($page == $i) {echo 'active'; } ?>">
-							<a class="page-link" href="index.php?page=<?= $i; ?>"> <?= $i; ?> </a>
-						</li>
-						<?php endfor; ?>
+						if($page != 1 && $page != $totoalPages) {
+							echo '<li class="page-item active"><a class="page-link" href="index.php?page='.$page.'"> '.$page.' </a></li>';
+						}
 
-						<li class="page-item <?php if($page >= $totoalPages) { echo 'disabled'; } ?>">
-							<a class="page-link" href="<?php if($page >= $totoalPages){ echo '#'; } else {echo "?page=". $next; } ?>">Next</a>
-						</li>
+						if($next < $totoalPages) { 
+							echo '<li class="page-item"><a class="page-link" href="index.php?page='.$next.'"> '.$next.'</a></li>';
+							if($page != ($totoalPages - 2)) { 
+								echo '<li class="page-item"><div class="page-link disabled"> ... </div></li>';
+							} 
+						}
+
+						if($totoalPages != 1) {
+							echo '<li class="page-item '. (($page == $totoalPages) ? 'active' : '') .'"><a class="page-link" href="index.php?page='. $totoalPages .'"> '. $totoalPages .' </a></li>';
+						}
+						echo '<li class="page-item '. (($page >= $totoalPages) ? 'disabled' : '') .'"><a class="page-link" href="'. (($page >= $totoalPages) ? '#' : '?page='.$next) .'">Next</a></li>';
+						?>
 					</ul>
 				</nav>
 			</div>
 		</div>
 	</div>
-
-	
-
-	<script>
-	$(document).ready(function () {
-		$('#records-limit').change(function () {
-			$('form').submit();
-		})
-	});
-	</script>
 
 	<!-- footer -->
 	<?php include( ROOT_PATH . '/includes/footer.php') ?>

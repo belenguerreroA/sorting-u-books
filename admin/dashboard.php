@@ -1,9 +1,30 @@
 <?php  include('../config.php'); ?>
 	<?php include(ROOT_PATH . '/admin/includes/admin_functions.php'); ?>
-	<?php include(ROOT_PATH . '/admin/includes/head_section.php'); ?>
+	<?php include(ROOT_PATH . '/includes/head_section.php'); ?>
 	<title>Admin | Dashboard</title>
 </head>
 <body>
+	<div class="p-5 bg-secondary text-white text-center">
+		<h1>Admin</h1>
+		<p>boo</p> 
+	</div>
+
+	
+	<!-- navbar -->
+	<?php include( ROOT_PATH . '/includes/navbar.php') ?>
+
+	<?php if (isset($_SESSION['user']['username'])) { ?>
+
+	<table id="tbl-books">
+		<thead>
+				<tr>
+					<th>ID</th>
+					<th>Name</th>
+				</tr>
+		</thead>
+	</table>
+
+
 	<div class="header">
 		<div class="logo">
 			<a href="<?php echo BASE_URL .'admin/dashboard.php' ?>">
@@ -39,5 +60,10 @@
 			<a href="posts.php">Add Posts</a>
 		</div>
 	</div>
+	<?php } ?>
+
+	
+	<!-- footer -->
+	<?php include( ROOT_PATH . '/includes/footer.php') ?>
 </body>
 </html>
