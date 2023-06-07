@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link <?php echo(($_SERVER['REQUEST_URI'] == "/") ? 'active' : '') . ((strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) ? 'active' : '') ?>" href="/">Home</a>
+        <a class="nav-link <?php echo(($_SERVER['REQUEST_URI'] == "/") ? 'active' : '') . ((strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) ? 'active' : '') ?>" href="<?php echo BASE_URL ?>"><i class="bi bi-book"></i></a>
       </li>
 	  <?php
 	  if (isset($_SESSION['user']['username'])) {
@@ -16,7 +16,7 @@
 			&nbsp;|&nbsp;
 			<span><a href="logout.php">logout</a></span>
 		</div>
-	<?php }else{ ?>
+	<?php //} else { ?>
 		<div class="d-flex banner">
 			<form action="<?php echo BASE_URL . 'index.php'; ?>" method="post" >	
 				<div class="row-login">

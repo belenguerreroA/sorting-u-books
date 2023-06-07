@@ -1,5 +1,5 @@
-<div class="footer">
-			<p>MyViewers &copy; <?php echo date('Y'); ?></p>
+<div class="footer container-fluid">
+			<p>MyViewers~~ &copy; <?php echo date('Y'); ?></p>
 		</div>
 		<!-- // footer -->
 
